@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Hello World V1</string>
+    <string name="hello_string">Hello Android World</string>
+</resources>
