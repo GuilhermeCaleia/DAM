@@ -8,59 +8,57 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_string"
         android:textColor="#9C27B0"
-        android:textColorHighlight="#F26262"
-        android:textColorHint="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.087" />
+        app:layout_constraintVertical_bias="0.155" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="240dp"
         android:layout_height="211dp"
-        android:layout_marginStart="85dp"
-        android:layout_marginTop="39dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="43dp"
-        app:layout_constraintBottom_toTopOf="@+id/calendarView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="158dp"
+        app:layout_constraintStart_toEndOf="@+id/calendarView3"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/emoji" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
+        android:layout_marginStart="437dp"
         android:layout_marginTop="23dp"
-        android:layout_marginEnd="169dp"
-        android:layout_marginBottom="39dp"
-        android:text="My first app"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="My First App"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <CalendarView
-        android:id="@+id/calendarView2"
+        android:id="@+id/calendarView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="27dp"
-        android:layout_marginBottom="73dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="39dp"
+        android:layout_marginEnd="39dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/calendarView3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/calendarView3" />
+
+    <CalendarView
+        android:id="@+id/calendarView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="102dp"
+        android:layout_marginTop="11dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
