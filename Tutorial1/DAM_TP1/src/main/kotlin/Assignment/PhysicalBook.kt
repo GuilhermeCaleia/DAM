@@ -1,5 +1,6 @@
 package org.example.Assignment
 
+// Especializa Book para copias fisicas com peso e tipo de capa.
 class PhysicalBook(
     title: String,
     author: String,
@@ -9,12 +10,9 @@ class PhysicalBook(
     val hasHardcover: Boolean = true
 ) : Book(title, author, publicationYear, availableCopies) {
 
-    override fun getStorageInfo(): String {
-        val cover = if (hasHardcover) "Yes" else "No"
-        return "Physical book: ${weight}g, Hardcover: $cover"
-    }
-
-    override fun toString(): String {
-        return super.toString() + "\nStorage: ${getStorageInfo()}"
+    // Indica como e' guardado fisicamente, incluindo peso e capa.
+    override fun storageInfo(): String {
+        val cover = if (hasHardcover) "Hardcover" else "Paperback"
+        return "Physical copy: ${weight}g, $cover"
     }
 }

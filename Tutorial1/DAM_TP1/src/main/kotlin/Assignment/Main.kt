@@ -1,9 +1,11 @@
 package org.example.Assignment
 
+// Pequena demo do funcionamento da classe Library com livros digitais e fisicos.
 fun main() {
 
     val library = Library("Central Library")
 
+    // Cria livros de tipos distintos para testar polimorfismo de storageInfo/toString.
     val digitalBook = DigitalBook(
         "Kotlin in Action",
         "Dmitry Jemerov",
@@ -31,6 +33,7 @@ fun main() {
         false
     )
 
+    // Insere os livros no catalogo.
     library.addBook(digitalBook)
     library.addBook(physicalBook)
     library.addBook(classicBook)

@@ -1,12 +1,18 @@
 package org.example
 
+// Calcula sucessivas alturas de um balao que perde 40% em cada salto ate cair abaixo de 1 metro ou 15 iteracoes.
 fun main() {
 
-    val bounces = generateSequence(1000.0) { it * 0.6 }
-        .takeWhile { it >= 1 }
-        .take(15)
-        .map { String.format("%.2f", it) }
-        .toList()
+    val heights = mutableListOf<String>()
+    var current = 1000.0
+    var count = 0
 
-    println(bounces)
+    // Continua enquanto ainda ha altura relevante e limita a 15 passos para evitar ciclos longos.
+    while (current >= 1 && count < 15) {
+        heights.add(String.format("%.2f", current))
+        current *= 0.6
+        count++
+    }
+
+    println(heights)
 }

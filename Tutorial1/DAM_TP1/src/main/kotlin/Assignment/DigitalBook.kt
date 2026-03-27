@@ -1,5 +1,6 @@
 package org.example.Assignment
 
+// Representa um livro digital, acrescentando tamanho do ficheiro e formato.
 class DigitalBook(
     title: String,
     author: String,
@@ -9,11 +10,6 @@ class DigitalBook(
     val format: String
 ) : Book(title, author, publicationYear, availableCopies) {
 
-    override fun getStorageInfo(): String {
-        return "Stored digitally: $fileSize MB, Format: $format"
-    }
-
-    override fun toString(): String {
-        return super.toString() + "\nStorage: ${getStorageInfo()}"
-    }
+    // Descreve armazenamento com dados especificos de ficheiro.
+    override fun storageInfo(): String = "Digital file: $fileSize MB ($format)"
 }
