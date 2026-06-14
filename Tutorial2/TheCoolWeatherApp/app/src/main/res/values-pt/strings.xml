@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Aplicação do Tempo</string>
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="pressure_label">Pressão ao Nível do Mar</string>
+    <string name="wind_direction_label">Direção do Vento</string>
+    <string name="wind_speed_label">Velocidade do Vento</string>
+    <string name="temperature_label">Temperatura</string>
+    <string name="time_label">Hora</string>
+    <string name="update_button">ATUALIZAR</string>
+</resources>

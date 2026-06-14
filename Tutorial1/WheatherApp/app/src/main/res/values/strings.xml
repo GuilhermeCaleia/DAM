@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Weather Buddy</string>
+    <string name="title_map">Select Location</string>
+    <string name="title_weather">Weather Details</string>
+    <string name="loading">Loading weather data…</string>
+    <string name="error_fetch">Failed to load weather. Tap to retry.</string>
+    <string name="retry">Retry</string>
+    <string name="temp_unit">°C</string>
+    <string name="humidity">Humidity: %1$d%%</string>
+    <string name="wind_speed">Wind: %1$.1f m/s</string>
+    <string name="description">Condition: %1$s</string>
+</resources>

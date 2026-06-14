@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "978020392885",
+    "project_id": "gymbuddy-498213",
+    "storage_bucket": "gymbuddy-498213.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978020392885:android:3b13c8121d8f0b9c3003fc",
+        "android_client_info": {
+          "package_name": "com.example.gymbuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1PR5L7rMLHvKRIYUlQ2MksIaPRBLNj20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
