@@ -1,9 +1,9 @@
-package com.example.gymbuddy
+package com.example.gymbuddy.ui.screens
 
-import android.os.Bundle
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,10 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -23,93 +27,41 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.example.gymbuddy.data.WorkoutPlan
 import com.example.gymbuddy.ui.AppBackground
 import com.example.gymbuddy.ui.AppTextField
 import com.example.gymbuddy.ui.ChoiceChip
-import com.example.gymbuddy.ui.GymBuddyTheme
 import com.example.gymbuddy.ui.ToggleRow
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 
-class SecondFragment : Fragment() {
-
-    private val viewModel: GymViewModel by activityViewModels()
-    private var selectedHour: String = "08:00"
-
-    override fun onCreateView(
-        inflater: android.view.LayoutInflater,
-        container: android.view.ViewGroup?,
-        savedInstanceState: Bundle?
-    ) = ComposeView(requireContext()).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        setContent {
-            GymBuddyTheme {
-                NewWorkoutPlanScreen(
-                    initialHour = selectedHour,
-                    onSelectTime = { onTimeSelected -> showTimePicker(onTimeSelected) },
-                    onSave = { name, selectedDays, selectedMuscles, notes, isAdditional, hour ->
-                        if (name.isBlank() || selectedDays.isEmpty() || selectedMuscles.isEmpty()) {
-                            Toast.makeText(requireContext(), "Preencha todos os campos obrigatórios", Toast.LENGTH_SHORT).show()
-                        } else {
-                            viewModel.insertWorkoutPlan(
-                                WorkoutPlan(
-                                    name = name,
-                                    days = selectedDays.joinToString(", "),
-                                    muscleGroups = selectedMuscles.joinToString(", "),
-                                    hour = hour,
-                                    isAdditional = isAdditional,
-                                    notes = notes.takeIf { it.isNotBlank() }
-                                )
-                            )
-                            findNavController().navigateUp()
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-    private fun showTimePicker(onTimeSelected: (String) -> Unit) {
-        val picker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat.CLOCK_24H)
-            .setHour(8)
-            .setMinute(0)
-            .setTitleText("Selecione a Hora")
-            .build()
-
-        picker.addOnPositiveButtonClickListener {
-            selectedHour = String.format("%02d:%02d", picker.hour, picker.minute)
-            onTimeSelected(selectedHour)
-        }
-
-        picker.show(childFragmentManager, "time_picker")
-    }
-}
-
-@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun NewWorkoutPlanScreen(
-    initialHour: String,
-    onSelectTime: (((String) -> Unit)) -> Unit,
-    onSave: (String, List<String>, List<String>, String, Boolean, String) -> Unit
+fun NewWorkoutPlanScreen(
+    onSave: (WorkoutPlan) -> Unit,
+    onInvalidForm: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
-    var selectedHour by remember { mutableStateOf(initialHour) }
+    var selectedHour by remember { mutableStateOf("08:00") }
     var isAdditional by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
     val selectedDays = remember { mutableStateListOf<String>() }
     val selectedMuscles = remember { mutableStateListOf<String>() }
     val allDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     val allMuscles = listOf("Peito", "Costas", "Pernas", "Bicep", "Tricep")
 
-    androidx.compose.foundation.layout.Column(
+    if (showTimePicker) {
+        ComposeTimePickerDialog(
+            initialTime = selectedHour,
+            onDismiss = { showTimePicker = false },
+            onConfirm = {
+                selectedHour = it
+                showTimePicker = false
+            }
+        )
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackground)
@@ -144,18 +96,69 @@ private fun NewWorkoutPlanScreen(
             }
         }
 
-        OutlinedButton(onClick = { onSelectTime { selectedHour = it } }, modifier = Modifier.fillMaxWidth().height(56.dp)) {
+        OutlinedButton(
+            onClick = { showTimePicker = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
             Text("Hora: $selectedHour")
         }
         ToggleRow(label = "TREINO OCASIONAL", checked = isAdditional, onCheckedChange = { isAdditional = it })
         AppTextField(value = notes, onValueChange = { notes = it }, label = "Notas (Opcional)", singleLine = false)
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { onSave(name, selectedDays.toList(), selectedMuscles.toList(), notes, isAdditional, selectedHour) },
-            modifier = Modifier.fillMaxWidth().height(56.dp)
+            onClick = {
+                if (name.isBlank() || selectedDays.isEmpty() || selectedMuscles.isEmpty()) {
+                    onInvalidForm()
+                } else {
+                    onSave(
+                        WorkoutPlan(
+                            name = name,
+                            days = selectedDays.joinToString(", "),
+                            muscleGroups = selectedMuscles.joinToString(", "),
+                            hour = selectedHour,
+                            isAdditional = isAdditional,
+                            notes = notes.takeIf { it.isNotBlank() }
+                        )
+                    )
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
         ) {
             Text("GUARDAR PLANO")
         }
         Spacer(modifier = Modifier.height(88.dp))
     }
+}
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun ComposeTimePickerDialog(
+    initialTime: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    val parts = initialTime.split(":")
+    val initialHour = parts.getOrNull(0)?.toIntOrNull() ?: 8
+    val initialMinute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+    val state = rememberTimePickerState(initialHour = initialHour, initialMinute = initialMinute, is24Hour = true)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Selecione a Hora") },
+        text = { TimePicker(state = state) },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(String.format("%02d:%02d", state.hour, state.minute)) }) {
+                Text("Confirmar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
 }

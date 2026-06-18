@@ -1,9 +1,7 @@
-package com.example.gymbuddy
+package com.example.gymbuddy.ui.screens
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -26,63 +24,24 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.example.gymbuddy.data.ProgressEntry
 import com.example.gymbuddy.ui.AppBackground
 import com.example.gymbuddy.ui.AppTextField
-import com.example.gymbuddy.ui.GymBuddyTheme
-
-class AddProgressFragment : Fragment() {
-
-    private val viewModel: GymViewModel by activityViewModels()
-
-    override fun onCreateView(
-        inflater: android.view.LayoutInflater,
-        container: android.view.ViewGroup?,
-        savedInstanceState: Bundle?
-    ) = ComposeView(requireContext()).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        setContent {
-            GymBuddyTheme {
-                AddProgressScreen { weight, bodyFat, notes, photoUris ->
-                    val parsedWeight = weight.toFloatOrNull()
-                    if (parsedWeight == null) {
-                        Toast.makeText(requireContext(), "Por favor insira um peso válido", Toast.LENGTH_SHORT).show()
-                    } else {
-                        viewModel.insertProgressEntry(
-                            ProgressEntry(
-                                date = System.currentTimeMillis(),
-                                weightKg = parsedWeight,
-                                bodyFatPercentage = bodyFat.toFloatOrNull(),
-                                photoUri = photoUris.joinToString(","),
-                                notes = notes.takeIf { it.isNotBlank() }
-                            )
-                        )
-                        findNavController().navigateUp()
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
-private fun AddProgressScreen(
-    onSave: (String, String, String, List<Uri>) -> Unit
+fun AddProgressScreen(
+    onSave: (ProgressEntry) -> Unit,
+    onInvalidWeight: () -> Unit
 ) {
     val context = LocalContext.current
     var weight by remember { mutableStateOf("") }
@@ -136,7 +95,27 @@ private fun AddProgressScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { onSave(weight, bodyFat, notes, selectedPhotoUris.toList()) }, modifier = Modifier.fillMaxWidth().height(56.dp)) {
+        Button(
+            onClick = {
+                val parsedWeight = weight.toFloatOrNull()
+                if (parsedWeight == null) {
+                    onInvalidWeight()
+                } else {
+                    onSave(
+                        ProgressEntry(
+                            date = System.currentTimeMillis(),
+                            weightKg = parsedWeight,
+                            bodyFatPercentage = bodyFat.toFloatOrNull(),
+                            photoUri = selectedPhotoUris.joinToString(","),
+                            notes = notes.takeIf { it.isNotBlank() }
+                        )
+                    )
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
             Text("SALVAR PROGRESSO")
         }
         Spacer(modifier = Modifier.height(88.dp))

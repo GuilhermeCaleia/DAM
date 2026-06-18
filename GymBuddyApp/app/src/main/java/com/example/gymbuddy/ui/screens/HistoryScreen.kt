@@ -1,8 +1,7 @@
-package com.example.gymbuddy
+package com.example.gymbuddy.ui.screens
 
 import android.content.Context
 import android.graphics.Color as AndroidColor
-import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,25 +24,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import coil.compose.AsyncImage
+import com.example.gymbuddy.R
 import com.example.gymbuddy.data.ProgressEntry
 import com.example.gymbuddy.ui.AppBackground
-import com.example.gymbuddy.ui.GymBuddyTheme
 import com.example.gymbuddy.ui.ScreenCard
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -55,27 +49,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class HistoryFragment : Fragment() {
-
-    private val viewModel: GymViewModel by activityViewModels()
-
-    override fun onCreateView(
-        inflater: android.view.LayoutInflater,
-        container: android.view.ViewGroup?,
-        savedInstanceState: Bundle?
-    ) = ComposeView(requireContext()).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        setContent {
-            GymBuddyTheme {
-                HistoryScreen(viewModel = viewModel, onDeleteEntry = { viewModel.deleteProgressEntry(it) })
-            }
-        }
-    }
-}
-
 @Composable
-private fun HistoryScreen(viewModel: GymViewModel, onDeleteEntry: (ProgressEntry) -> Unit) {
-    val entries by viewModel.progressEntries.observeAsState(emptyList())
+fun HistoryScreen(
+    entries: List<ProgressEntry>,
+    onDeleteEntry: (ProgressEntry) -> Unit
+) {
     var selectedEntry by remember { mutableStateOf<ProgressEntry?>(null) }
     val weight = entries.firstOrNull()?.weightKg
     val calorieInfo = calorieInfo(LocalContext.current, weight)
@@ -91,7 +69,12 @@ private fun HistoryScreen(viewModel: GymViewModel, onDeleteEntry: (ProgressEntry
         Text("PROGRESSO", style = MaterialTheme.typography.headlineSmall)
 
         ScreenCard(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Text(calorieInfo.result, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
                 Text(calorieInfo.label, style = MaterialTheme.typography.labelMedium)
                 if (calorieInfo.showHint) {
@@ -255,7 +238,7 @@ private fun ProgressEntryCard(entry: ProgressEntry, onClick: () -> Unit) {
                 Text(dateFormat.format(Date(entry.date)), style = MaterialTheme.typography.titleMedium)
                 Text("${entry.weightKg} kg")
                 entry.bodyFatPercentage?.let { Text("$it% IMG") }
-                if (!entry.notes.isNullOrBlank()) Text(entry.notes!!, style = MaterialTheme.typography.bodySmall)
+                if (!entry.notes.isNullOrBlank()) Text(entry.notes, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -268,7 +251,7 @@ private fun ProgressDetailDialog(
     onDelete: () -> Unit
 ) {
     var showConfirmDelete by remember { mutableStateOf(false) }
-    val dateFormat = remember { SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale("pt", "PT")) }
+    val dateFormat = remember { SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale.forLanguageTag("pt-PT")) }
     val imageUrls = entry.photoUri?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
 
     if (showConfirmDelete) {
@@ -294,7 +277,11 @@ private fun ProgressDetailDialog(
                 if (imageUrls.isNotEmpty()) {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(imageUrls) { url ->
-                            AsyncImage(model = url, contentDescription = null, modifier = Modifier.size(180.dp).clip(RoundedCornerShape(12.dp)))
+                            AsyncImage(
+                                model = url,
+                                contentDescription = null,
+                                modifier = Modifier.size(180.dp).clip(RoundedCornerShape(12.dp))
+                            )
                         }
                     }
                 }

@@ -25,7 +25,7 @@
                 android:id="@+id/edit_plan_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -35,7 +35,7 @@
             android:text="DIAS DO TREINO"
             android:textColor="@color/black"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group_days"
@@ -101,7 +101,7 @@
             android:text="GRUPOS MUSCULARES"
             android:textColor="@color/black"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group_muscles"
@@ -153,7 +153,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
             android:text="Selecionar Hora"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_is_additional"
@@ -161,7 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="TREINO OCASIONAL"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
@@ -176,7 +176,7 @@
                 android:id="@+id/edit_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -186,7 +186,7 @@
             android:layout_marginTop="32dp"
             android:text="GUARDAR PLANO"
             android:backgroundTint="@color/gym_green"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

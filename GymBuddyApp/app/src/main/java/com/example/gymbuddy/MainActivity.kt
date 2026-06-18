@@ -1,49 +1,67 @@
 package com.example.gymbuddy
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.navigation.ui.setupWithNavController
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.gymbuddy.databinding.ActivityMainBinding
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import java.util.concurrent.TimeUnit
-
+import com.example.gymbuddy.ui.GymBuddyTheme
+import com.example.gymbuddy.ui.navigation.AppDestination
+import com.example.gymbuddy.ui.navigation.destinationForRoute
+import com.example.gymbuddy.ui.navigation.topLevelDestinations
+import com.example.gymbuddy.ui.screens.AddProgressScreen
+import com.example.gymbuddy.ui.screens.DashboardScreen
+import com.example.gymbuddy.ui.screens.HistoryScreen
+import com.example.gymbuddy.ui.screens.NewWorkoutPlanScreen
+import com.example.gymbuddy.ui.screens.ProfileScreen
+import com.example.gymbuddy.ui.screens.WorkoutPlansScreen
+import com.example.gymbuddy.ui.screens.calculateTargetDate
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
     private val viewModel: GymViewModel by viewModels()
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean -> }
+    ) { _: Boolean -> }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         viewModel.workoutPlans.observe(this) { plans ->
             AlarmHelper(this).scheduleWorkoutAlarms(plans)
@@ -52,64 +70,25 @@ class MainActivity : AppCompatActivity() {
         askNotificationPermission()
         scheduleNotifications()
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0) // No padding for bottom nav
-            insets
-        }
-        setSupportActionBar(binding.toolbar)
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        // Set up BottomNavigationView
-        binding.bottomNavigation.setupWithNavController(navController)
-
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.DashboardFragment, R.id.WorkoutPlansFragment, R.id.HistoryFragment, R.id.ProfileFragment)
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.WorkoutPlansFragment -> {
-                    binding.fab.setImageResource(android.R.drawable.ic_input_add)
-                    binding.fab.show()
-                    binding.fab.setOnClickListener {
-                        navController.navigate(R.id.action_WorkoutPlansFragment_to_SecondFragment)
+        setContent {
+            GymBuddyTheme {
+                GymBuddyApp(
+                    viewModel = viewModel,
+                    onLogout = {
+                        startActivity(Intent(this, AuthActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                        finish()
                     }
-                }
-                R.id.HistoryFragment -> {
-                    binding.fab.setImageResource(android.R.drawable.ic_input_add)
-                    binding.fab.show()
-                    binding.fab.setOnClickListener {
-                        navController.navigate(R.id.action_HistoryFragment_to_AddProgressFragment)
-                    }
-                }
-                else -> binding.fab.hide()
+                )
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            com.google.firebase.Firebase.auth.signOut()
+            Firebase.auth.signOut()
         }
     }
 
@@ -125,14 +104,155 @@ class MainActivity : AppCompatActivity() {
 
     private fun scheduleNotifications() {
         val workRequest = PeriodicWorkRequestBuilder<GymNotificationWorker>(15, TimeUnit.MINUTES)
-            .setInitialDelay(1, TimeUnit.MINUTES) // Start soon after app open
+            .setInitialDelay(1, TimeUnit.MINUTES)
             .addTag("gym_notif_task")
             .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "gym_notifications",
-            ExistingPeriodicWorkPolicy.UPDATE, // Always update to keep it fresh
+            ExistingPeriodicWorkPolicy.UPDATE,
             workRequest
         )
     }
+}
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun GymBuddyApp(
+    viewModel: GymViewModel,
+    onLogout: () -> Unit
+) {
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = backStackEntry?.destination
+    val currentRoute = currentDestination?.route
+    val appDestination = destinationForRoute(currentRoute)
+
+    val workoutPlans by viewModel.workoutPlans.observeAsState(emptyList())
+    val trainingLogs by viewModel.trainingLogs.observeAsState(emptyList())
+    val progressEntries by viewModel.progressEntries.observeAsState(emptyList())
+    val fullName = Firebase.auth.currentUser?.displayName ?: "Utilizador"
+    val firstName = fullName.split(" ").firstOrNull() ?: fullName
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(appDestination.title) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+        },
+        bottomBar = {
+            if (appDestination.isTopLevel) {
+                NavigationBar {
+                    topLevelDestinations.forEach { destination ->
+                        val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = {
+                                navController.navigate(destination.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = iconForDestination(destination)),
+                                    contentDescription = destination.title
+                                )
+                            },
+                            label = { Text(destination.title) }
+                        )
+                    }
+                }
+            }
+        },
+        floatingActionButton = {
+            when (appDestination) {
+                AppDestination.WorkoutPlans -> {
+                    FloatingActionButton(onClick = { navController.navigate(AppDestination.NewWorkoutPlan.route) }) {
+                        Icon(painterResource(android.R.drawable.ic_input_add), contentDescription = "Adicionar plano")
+                    }
+                }
+                AppDestination.History -> {
+                    FloatingActionButton(onClick = { navController.navigate(AppDestination.AddProgress.route) }) {
+                        Icon(painterResource(android.R.drawable.ic_input_add), contentDescription = "Adicionar progresso")
+                    }
+                }
+                else -> Unit
+            }
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = AppDestination.Dashboard.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(AppDestination.Dashboard.route) {
+                DashboardScreen(
+                    userFirstName = firstName,
+                    workoutPlans = workoutPlans,
+                    trainingLogs = trainingLogs
+                )
+            }
+            composable(AppDestination.WorkoutPlans.route) {
+                WorkoutPlansScreen(
+                    plans = workoutPlans,
+                    logs = trainingLogs,
+                    onMarkDone = { plan, isRegular ->
+                        if (isRegular) {
+                            viewModel.markAttendance(plan, calculateTargetDate(plan))
+                        } else {
+                            viewModel.markAttendance(plan)
+                        }
+                    },
+                    onDeletePlan = { plan -> viewModel.deleteWorkoutPlan(plan) }
+                )
+            }
+            composable(AppDestination.NewWorkoutPlan.route) {
+                NewWorkoutPlanScreen(
+                    onSave = { plan ->
+                        viewModel.insertWorkoutPlan(plan)
+                        navController.navigateUp()
+                    },
+                    onInvalidForm = {
+                        Toast.makeText(navController.context, "Preencha todos os campos obrigatórios", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            composable(AppDestination.History.route) {
+                HistoryScreen(
+                    entries = progressEntries,
+                    onDeleteEntry = { entry -> viewModel.deleteProgressEntry(entry) }
+                )
+            }
+            composable(AppDestination.AddProgress.route) {
+                AddProgressScreen(
+                    onSave = { entry ->
+                        viewModel.insertProgressEntry(entry)
+                        navController.navigateUp()
+                    },
+                    onInvalidWeight = {
+                        Toast.makeText(navController.context, "Por favor insira um peso válido", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            composable(AppDestination.Profile.route) {
+                ProfileScreen(viewModel = viewModel, onLogout = onLogout)
+            }
+        }
+    }
+}
+
+private fun iconForDestination(destination: AppDestination): Int = when (destination) {
+    AppDestination.Dashboard -> android.R.drawable.ic_menu_today
+    AppDestination.WorkoutPlans -> android.R.drawable.ic_menu_agenda
+    AppDestination.History -> android.R.drawable.ic_menu_recent_history
+    AppDestination.Profile -> android.R.drawable.ic_menu_myplaces
+    else -> android.R.drawable.ic_menu_help
 }

@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?attr/textAppearanceHeadline6"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
                     tools:text="75.5 kg" />
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_marginStart="16dp"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textColor="@color/gym_green"
-                    android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
                     tools:text="15% IMG" />
             </LinearLayout>
 

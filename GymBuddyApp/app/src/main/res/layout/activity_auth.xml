@@ -14,7 +14,7 @@
         android:text="GymBuddy"
         android:textAppearance="?attr/textAppearanceHeadline3"
         android:textColor="@color/gym_green"
-        android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -87,7 +87,7 @@
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:text="Login"
-        android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
         android:backgroundTint="@color/gym_green"
         app:layout_constraintTop_toBottomOf="@id/layout_password" />
 
@@ -97,7 +97,7 @@
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:text="Registar"
-        android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
         android:backgroundTint="@color/gym_green"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/layout_password" />
@@ -117,7 +117,7 @@
         android:layout_marginTop="16dp"
         android:text="Não tens conta? Regista-te"
         android:textColor="@color/gym_green"
-        android:fontFamily="@font/ultimate"
+        android:fontFamily="@font/coolvetica_rg"
         android:textAllCaps="true"
         app:layout_constraintTop_toBottomOf="@id/barrier_buttons" />
 

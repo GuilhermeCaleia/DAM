@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [WorkoutPlan::class, TrainingLog::class, ProgressEntry::class], version = 8, exportSchema = false)
+@Database(entities = [WorkoutPlan::class, TrainingLog::class, ProgressEntry::class], version = 9, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gymDao(): GymDao
 

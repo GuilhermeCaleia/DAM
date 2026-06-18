@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:inputType="numberDecimal"
-                android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -60,7 +60,7 @@
                 android:id="@+id/edit_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif" />
+            android:fontFamily="@font/coolvetica_rg" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_marginTop="24dp"
             android:text="FOTOS DE PROGRESSO"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_photo_previews"
@@ -96,7 +96,7 @@
             android:layout_marginTop="32dp"
             android:text="SALVAR PROGRESSO"
             android:backgroundTint="@color/gym_green"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

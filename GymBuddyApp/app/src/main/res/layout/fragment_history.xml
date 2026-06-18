@@ -19,7 +19,7 @@
             android:text="PROGRESSO"
             android:textAppearance="?attr/textAppearanceHeadline5"
             android:textColor="@color/black"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_calories"
@@ -44,7 +44,7 @@
                     android:text="--- KCAL"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/gym_green"
-                    android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
                 <TextView
                     android:id="@+id/text_goal_label"
@@ -73,7 +73,7 @@
             android:layout_marginTop="32dp"
             android:text="EVOLUÇÃO DO PESO (KG)"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -97,7 +97,7 @@
             android:layout_marginTop="32dp"
             android:text="HISTÓRICO"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:fontFamily="@font/ultimate" />
+        android:fontFamily="@font/coolvetica_rg" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_history"

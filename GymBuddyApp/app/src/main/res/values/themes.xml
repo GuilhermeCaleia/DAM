@@ -6,9 +6,6 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 
-        <!-- Modern and Bold Font -->
-        <item name="fontFamily">@font/ultimate</item>
-        <item name="android:fontFamily">@font/ultimate</item>
     </style>
 
     <style name="Theme.GymBuddy" parent="Base.Theme.GymBuddy" />
